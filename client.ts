@@ -1,4 +1,3 @@
-// File: rustplus/RustPlusClient.ts
 import { EventEmitter } from "node:events";
 import * as path from "node:path";
 import protobuf from "npm:protobufjs";
