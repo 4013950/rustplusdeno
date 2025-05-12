@@ -13,7 +13,7 @@ export interface RustPlusOptions {
   playerToken: number;
 }
 
-export class RustPlusClient extends EventEmitter {
+export class RustPlus extends EventEmitter {
   private ws?: WebSocket;
   private AppRequest?: protobuf.Type;
   private AppMessage?: protobuf.Type;
