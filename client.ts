@@ -3,8 +3,15 @@ import * as path from "node:path";
 import protobuf from "npm:protobufjs";
 import Long from "npm:long";
 import { fromFileUrl } from "jsr:@std/path";
-import { AppInfo, AppMap, AppTeamInfo } from './types.d.ts'
+import { AppInfo, AppMap, AppMapMarker, AppTeamInfo } from './types.d.ts'
 
+export const gridDiameter = 146.25;
+
+function correctMapSize(mapSize: number): number {
+  const remainder = mapSize % gridDiameter;
+  const offset = gridDiameter - remainder;
+  return remainder < 120 ? mapSize - remainder : mapSize + offset;
+}
 
 export interface RustPlusOptions {
   ip: string;
@@ -165,20 +172,30 @@ export class RustPlus extends EventEmitter {
     }
   }
 
-  async getMap(): Promise<AppMap> {
+  async getMap(): Promise<AppMap & { correctedMapSize: number }> {
     try {
       const response = await this.sendRequest({ getMap: {} });
-      return response.map as AppMap;
+      const map = response.map as AppMap;
+
+      const total = map.width + map.height + map.oceanMargin;
+      const mapSize = total * 0.6;
+      const correctedMapSize = correctMapSize(mapSize)
+
+      return {
+        ...map,
+        correctedMapSize,
+      };
     } catch (err) {
       console.error("Error getting server info:", err);
       throw err;
     }
   }
 
+
   async sendTeamMessage(message: string): Promise<boolean> {
     try {
       const res = await this.sendRequest({ sendTeamMessage: { message } });
-      
+
       if (res.error) throw res.error;
 
       return true;
@@ -198,4 +215,17 @@ export class RustPlus extends EventEmitter {
       throw err;
     }
   }
+
+  // This returns the base array of markers which is unusual but better in my opinion for this specific helper since there is no other data
+  async getMapMarkers(): Promise<AppMapMarker[]> {
+    try {
+      const response = await this.sendRequest({ getMapMarkers: {} });
+      return response.mapMarkers.markers as AppMapMarker[];
+    } catch (err) {
+      console.error("Error getting team info:", err);
+      throw err;
+    }
+  }
+
+
 }

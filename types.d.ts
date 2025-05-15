@@ -1,3 +1,5 @@
+import { Buffer } from "node:buffer";
+
 export interface AppInfo {
   name: string;
   headerImage: string;
@@ -23,7 +25,7 @@ export interface AppMap {
   monuments: Monument[];
   width: number;
   height: number;
-  jpgImage: Uint8Array;
+  jpgImage: Buffer;
   oceanMargin: number;
   background: string;
 }
@@ -76,3 +78,41 @@ type AppNewTeamMessage = {
 type AppBroadcast = {
   teamMessage?: AppNewTeamMessage;
 };
+
+
+type Vector4 = {
+    x: number;
+    y: number;
+    z: number;
+    w: number;
+  };
+  
+  // Type for a SellOrder, which holds information about the items for sale
+  type SellOrder = {
+    itemId: number;
+    quantity: number;
+    currencyId: number;
+    costPerItem: number;
+    amountInStock: number;
+    itemIsBlueprint: boolean;
+    currencyIsBlueprint: boolean;
+    itemCondition: number;
+    itemConditionMax: number;
+  };
+  
+  // Type for AppMarker, representing map markers with additional attributes like sell orders and location
+  export type AppMapMarker = {
+    sellOrders: SellOrder[]; // Array of SellOrder objects
+    id: number;
+    type: number;
+    x: number;
+    y: number;
+    //steamId: any; // `steamId` can be of any type, but you can refine it later
+    rotation: number;
+    radius: number;
+    color1: Vector4; // Color information
+    color2: Vector4; // Color information
+    alpha: number;
+    name: string;
+    outOfStock: boolean;
+  };
