@@ -35,7 +35,7 @@ export class RustPlus extends EventEmitter {
   async connect() {
     try {
       // Get directory of current module file
-      const moduleDir = path.dirname(fromFileUrl(import.meta.url));
+      const moduleDir = path.dirname(import.meta.url);
       // Resolve proto file path relative to this module
       const protoPath = path.resolve(moduleDir, "./rustplus.proto");
       console.log(`Loading protobuf definitions from: ${protoPath}`);
